@@ -56,7 +56,7 @@ const AddShowTime = () => {
         "http://localhost:4000/showtime",
         values
       );
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         toast.success("Showtime added successfully");
       } else {
         toast.error("Failed to add showtime");
