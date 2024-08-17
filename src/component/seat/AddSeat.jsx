@@ -4,18 +4,11 @@ import axios from "axios";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  FaCheckCircle,
-  FaCalendarAlt,
-  FaTheaterMasks,
-  FaMoon,
-  FaSun,
-} from "react-icons/fa";
+import { FaCheckCircle, FaCalendarAlt, FaMoon, FaSun } from "react-icons/fa";
 
 const AddSeat = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [showtimes, setShowtimes] = useState([]);
-  const [theaters, setTheaters] = useState([]);
 
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
@@ -23,12 +16,10 @@ const AddSeat = () => {
 
     const fetchOptions = async () => {
       try {
-        const [showtimeResponse, theaterResponse] = await Promise.all([
-          axios.get("http://localhost:4000/showtime"),
-          axios.get("http://localhost:4000/theater"),
-        ]);
+        const showtimeResponse = await axios.get(
+          "http://localhost:4000/showtime"
+        );
         setShowtimes(showtimeResponse.data);
-        setTheaters(theaterResponse.data);
       } catch (error) {
         console.error("Error fetching options:", error);
         toast.error("Failed to fetch options");
@@ -80,19 +71,6 @@ const AddSeat = () => {
         })),
       ],
     },
-    {
-      name: "theater_id",
-      label: "Theater",
-      type: "select",
-      icon: <FaTheaterMasks className="text-purple-400" />,
-      options: [
-        { value: "", label: "Choose Theater" },
-        ...theaters.map((theater) => ({
-          value: theater.theaterid,
-          label: `${theater.theater_name} / ${theater.theater_location}`,
-        })),
-      ],
-    },
   ];
 
   return (
@@ -120,12 +98,10 @@ const AddSeat = () => {
           initialValues={{
             status: "",
             showtime_id: "",
-            theater_id: "",
           }}
           validationSchema={Yup.object({
             status: Yup.string().required("Status is required"),
             showtime_id: Yup.string().required("Showtime is required"),
-            theater_id: Yup.string().required("Theater is required"),
           })}
           onSubmit={handleSubmit}
         >
