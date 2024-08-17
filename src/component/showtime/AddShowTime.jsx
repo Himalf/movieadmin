@@ -181,8 +181,10 @@ const AddShowTime = () => {
                   Show Time
                 </label>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {Array.from({ length: 24 }, (_, hour) => {
-                    const timeString = moment({ hour }).format("HH:mm");
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const timeString = moment({ hour: 8 + index * 3 }).format(
+                      "HH:mm"
+                    );
                     return (
                       <button
                         key={timeString}

@@ -67,7 +67,7 @@ const AddSeat = () => {
         { value: "", label: "Choose Showtime" },
         ...showtimes.map((showtime) => ({
           value: showtime.showtimeid,
-          label: `${showtime.show_time} || ${showtime.show_date} || ${showtime.title}`,
+          label: `${showtime.show_time} || ${showtime.show_date} || ${showtime.title}|| ${showtime.theater_name}`,
         })),
       ],
     },
