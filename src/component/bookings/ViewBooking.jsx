@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useTable, useSortBy, usePagination } from "react-table";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ViewBooking = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEmail, setSelectedEmail] = useState(null);
 
   useEffect(() => {
     fetchBookings();
@@ -25,46 +25,33 @@ const ViewBooking = () => {
     }
   };
 
-  const columns = React.useMemo(
-    () => [
-      { Header: "Booking ID", accessor: "bookingid" },
-      { Header: "Email", accessor: "email" },
-      { Header: "Username", accessor: "fullname" },
-      { Header: "Movie Title", accessor: "title" },
-      { Header: "Show Time", accessor: "show_time" },
-      { Header: "Show Date", accessor: "show_date" },
-      { Header: "Seat Number", accessor: "seat_number" },
-    ],
-    []
-  );
+  // Group bookings by email and then by show time
+  const groupedBookings = bookings.reduce((acc, booking) => {
+    const { email, show_time } = booking;
+    if (!acc[email]) {
+      acc[email] = {};
+    }
+    if (!acc[email][show_time]) {
+      acc[email][show_time] = {
+        ...booking,
+        seat_numbers: [],
+      };
+    }
+    acc[email][show_time].seat_numbers.push(booking.seat_number);
+    return acc;
+  }, {});
 
-  const data = React.useMemo(() => bookings, [bookings]);
+  // Set default email to the first email in the list if none is selected
+  useEffect(() => {
+    if (Object.keys(groupedBookings).length > 0 && !selectedEmail) {
+      setSelectedEmail(Object.keys(groupedBookings)[0]);
+    }
+  }, [groupedBookings, selectedEmail]);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    state: { sortBy },
-    gotoPage,
-    pageCount,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    previousPage,
-    nextPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0, pageSize: 10 },
-    },
-    useSortBy,
-    usePagination
-  );
+  // Handle email click
+  const handleEmailClick = (email) => {
+    setSelectedEmail(email);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -73,92 +60,63 @@ const ViewBooking = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-6">View Bookings</h1>
-      <table
-        {...getTableProps()}
-        className="min-w-full bg-white border border-gray-300"
-      >
-        <thead className="bg-gray-100">
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="py-2 px-4 border-b text-left cursor-pointer"
+      <div className="flex space-x-6">
+        {/* Email List */}
+        <div className="w-1/4">
+          <h2 className="text-lg font-semibold mb-4">Emails</h2>
+          <ul className="space-y-2">
+            {Object.keys(groupedBookings).map((email) => (
+              <li key={email}>
+                <button
+                  onClick={() => handleEmailClick(email)}
+                  className={`block w-full text-left p-2 rounded-md ${
+                    selectedEmail === email
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 hover:bg-gray-300"
+                  } transition duration-200`}
                 >
-                  {column.render("Header")}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()} className="py-2 px-4 border-b">
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="mt-4 flex justify-between items-center">
-        <button
-          onClick={() => gotoPage(0)}
-          disabled={!canPreviousPage}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
-        >
-          {"<<"}
-        </button>
-        <button
-          onClick={() => previousPage()}
-          disabled={!canPreviousPage}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
-        >
-          {"<"}
-        </button>
-        <span>
-          Page{" "}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>
-        </span>
-        <button
-          onClick={() => nextPage()}
-          disabled={!canNextPage}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
-        >
-          {">"}
-        </button>
-        <button
-          onClick={() => gotoPage(pageCount - 1)}
-          disabled={!canNextPage}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md"
-        >
-          {">>"}
-        </button>
-        <select
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-          className="border border-gray-300 rounded-md"
-        >
-          {[10, 20, 30, 40].map((size) => (
-            <option key={size} value={size}>
-              Show {size}
-            </option>
-          ))}
-        </select>
+                  {email}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Booking Details */}
+        <div className="w-3/4">
+          {selectedEmail ? (
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="py-2 px-4 border-b">Movie Title</th>
+                  <th className="py-2 px-4 border-b">Show Time</th>
+                  <th className="py-2 px-4 border-b">Show Date</th>
+                  <th className="py-2 px-4 border-b">Seat Numbers</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.values(groupedBookings[selectedEmail]).map(
+                  (booking) => (
+                    <tr key={`${booking.show_time}-${booking.show_date}`}>
+                      <td className="py-2 px-4 border-b">{booking.title}</td>
+                      <td className="py-2 px-4 border-b">
+                        {booking.show_time}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {booking.show_date}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {booking.seat_numbers.join(", ")}
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <p>Select an email to view bookings</p>
+          )}
+        </div>
       </div>
       <ToastContainer />
     </div>

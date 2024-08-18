@@ -10,6 +10,7 @@ const AddSeat = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [showtimes, setShowtimes] = useState([]);
 
+  // Load dark mode setting and fetch showtimes on mount
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
@@ -29,11 +30,13 @@ const AddSeat = () => {
     fetchOptions();
   }, []);
 
+  // Toggle dark mode and save preference to localStorage
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     localStorage.setItem("darkMode", !darkMode);
   };
 
+  // Handle form submission
   const handleSubmit = async (values, { resetForm }) => {
     try {
       await axios.post("http://localhost:4000/seat", values);
@@ -45,6 +48,7 @@ const AddSeat = () => {
     }
   };
 
+  // Form field definitions
   const formFields = [
     {
       name: "status",
@@ -67,7 +71,7 @@ const AddSeat = () => {
         { value: "", label: "Choose Showtime" },
         ...showtimes.map((showtime) => ({
           value: showtime.showtimeid,
-          label: `${showtime.show_time} || ${showtime.show_date} || ${showtime.title}|| ${showtime.theater_name}`,
+          label: `${showtime.show_time} || ${showtime.show_date} || ${showtime.title} || ${showtime.theater_name}`,
         })),
       ],
     },
@@ -80,8 +84,9 @@ const AddSeat = () => {
       } min-h-screen`}
     >
       <div className="container mx-auto p-8 max-w-lg">
+        {/* Dark mode toggle button */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">{darkMode ? "" : ""}</h1>
+          <h1 className="text-3xl font-bold">Add Seat</h1>
           <button
             onClick={toggleDarkMode}
             className="bg-gray-300 dark:bg-gray-600 p-2 rounded-full"
@@ -94,6 +99,7 @@ const AddSeat = () => {
           </button>
         </div>
 
+        {/* Formik form */}
         <Formik
           initialValues={{
             status: "",
@@ -131,20 +137,19 @@ const AddSeat = () => {
                         darkMode ? "focus:ring-blue-500" : "focus:ring-blue-400"
                       } focus:border-transparent transition duration-300 ease-in-out`}
                     >
-                      {field.type === "select" &&
-                        field.options.map((option) => (
-                          <option
-                            key={option.value}
-                            value={option.value}
-                            className={
-                              darkMode
-                                ? "bg-gray-700 text-white"
-                                : "bg-white text-gray-800"
-                            }
-                          >
-                            {option.label}
-                          </option>
-                        ))}
+                      {field.options.map((option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                          className={
+                            darkMode
+                              ? "bg-gray-700 text-white"
+                              : "bg-white text-gray-800"
+                          }
+                        >
+                          {option.label}
+                        </option>
+                      ))}
                     </Field>
                   </div>
                   <ErrorMessage
@@ -155,6 +160,7 @@ const AddSeat = () => {
                 </div>
               ))}
 
+              {/* Submit button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
