@@ -42,7 +42,7 @@ const ViewMovie = () => {
   };
 
   const handleUpdate = (movieId) => {
-    window.location.href = `/update-movie/${movieId}`;
+    window.location.href = `/updatemovie/${movieId}`;
   };
 
   return (
@@ -133,7 +133,9 @@ const ViewMovie = () => {
                     <td className="py-2 lg:py-3 px-2 lg:px-4 border-b">
                       <div className="flex space-x-1 lg:space-x-2">
                         <button
-                          onClick={() => handleUpdate(movie.movieid)}
+                          onClick={() => {
+                            handleUpdate(movie.movieid);
+                          }}
                           className="bg-green-600 text-white px-3 lg:px-4 py-1 lg:py-2 rounded-md hover:bg-green-700"
                         >
                           Update

@@ -8,6 +8,7 @@ import ShowTime from "./app/show_time";
 import Seat from "./app/seats";
 import Booking from "./app/booking";
 import UpdateCategory from "./component/moviecategory/UpdateCategory";
+import UpdateMovie from "./component/movie/UpdateMovie";
 function App() {
   return (
     <main>
@@ -21,6 +22,7 @@ function App() {
             />
             <Route element={<Theaters />} path="/theaters" />
             <Route element={<Movies />} path="/movie" />
+            <Route element={<UpdateMovie />} path="/updatemovie/:movieId" />
             <Route element={<ShowTime />} path="/showtime" />
             <Route element={<Seat />} path="/seat" />
             <Route element={<Booking />} path="/bookings" />
