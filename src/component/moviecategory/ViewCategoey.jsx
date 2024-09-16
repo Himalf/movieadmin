@@ -104,7 +104,7 @@ const ViewCategory = () => {
                   <AiFillDelete />
                 </div>
                 <div className="cursor-pointer text-blue-500">
-                  <Link to={`/editcategory/${val.categoryid}`}>
+                  <Link state={val} to={`/editcategory/${val.categoryid}`}>
                     <RxUpdate />
                   </Link>
                 </div>

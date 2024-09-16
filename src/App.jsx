@@ -7,6 +7,7 @@ import Movies from "./app/movies";
 import ShowTime from "./app/show_time";
 import Seat from "./app/seats";
 import Booking from "./app/booking";
+import UpdateCategory from "./component/moviecategory/UpdateCategory";
 function App() {
   return (
     <main>
@@ -14,6 +15,10 @@ function App() {
         <Routes>
           <Route element={<Layout />} path="/">
             <Route element={<MovieCategory />} path="/moviecategory" />
+            <Route
+              element={<UpdateCategory />}
+              path="/editcategory/:categoryId"
+            />
             <Route element={<Theaters />} path="/theaters" />
             <Route element={<Movies />} path="/movie" />
             <Route element={<ShowTime />} path="/showtime" />
