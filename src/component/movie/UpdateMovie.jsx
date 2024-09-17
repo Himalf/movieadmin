@@ -87,21 +87,28 @@ const UpdateMovie = () => {
       formData.append("releasedate", values.releasedate);
       formData.append("duration", values.duration);
       formData.append("moviecategoryid", values.moviecategoryid);
-      formData.append("poster", newImg);
 
-      const response = await axios.post(
-        "http://localhost:4000/movie",
+      // Only append the new image if it's selected
+      if (newImg) {
+        formData.append("poster", newImg);
+      } else {
+        // Append the existing image URL (as a string) if no new image is selected
+        formData.append("poster", values.poster); // The existing image path
+      }
+
+      const response = await axios.patch(
+        `http://localhost:4000/movie/${movieId}`,
         formData
       );
 
       if (response.status === 200) {
-        toast.success("Movie added successfully");
+        toast.success("Movie updated successfully");
       } else {
-        toast.error("Cannot post data");
+        toast.error("Cannot update the movie");
       }
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred while adding the movie");
+      toast.error("An error occurred while updating the movie");
     } finally {
       setSubmitting(false);
     }
@@ -163,7 +170,7 @@ const UpdateMovie = () => {
                     src={
                       newImg
                         ? URL.createObjectURL(newImg)
-                        : "https://via.placeholder.com/150"
+                        : `http://localhost:4000/${location.state.poster}`
                     }
                     className="w-fit h-72 mx-auto p-10"
                     alt="preview"
@@ -173,7 +180,6 @@ const UpdateMovie = () => {
                   id="poster"
                   type="file"
                   accept=".png,.jpg,.jpeg,.gif"
-                  required
                   onChange={handleImageChange}
                 />
                 <div className="mx-auto border-2 rounded-md text-lg w-32 h-10 text-center bg-black flex justify-center mt-3 hover:bg-white hover:border-2 px-2 hover:text-black bg-mainColor text-white font-bold">

@@ -22,7 +22,10 @@ function App() {
             />
             <Route element={<Theaters />} path="/theaters" />
             <Route element={<Movies />} path="/movie" />
-            <Route element={<UpdateMovie />} path="/updatemovie/:movieId" />
+            <Route
+              element={<UpdateMovie />}
+              path="/movie/updatemovie/:movieId"
+            />
             <Route element={<ShowTime />} path="/showtime" />
             <Route element={<Seat />} path="/seat" />
             <Route element={<Booking />} path="/bookings" />

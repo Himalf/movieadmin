@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LiaLinkedinIn } from "react-icons/lia";
+import { Link } from "react-router-dom";
 
 const ViewMovie = () => {
   const [movies, setMovies] = useState([]);
@@ -132,14 +134,13 @@ const ViewMovie = () => {
                     </td>
                     <td className="py-2 lg:py-3 px-2 lg:px-4 border-b">
                       <div className="flex space-x-1 lg:space-x-2">
-                        <button
-                          onClick={() => {
-                            handleUpdate(movie.movieid);
-                          }}
+                        <Link
+                          state={movie}
                           className="bg-green-600 text-white px-3 lg:px-4 py-1 lg:py-2 rounded-md hover:bg-green-700"
+                          to={`updatemovie/${movie.movieid}`}
                         >
                           Update
-                        </button>
+                        </Link>
                         <button
                           onClick={() => handleDelete(movie.movieid)}
                           className="bg-red-600 text-white px-3 lg:px-4 py-1 lg:py-2 rounded-md hover:bg-red-700"
