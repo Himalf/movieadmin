@@ -110,7 +110,7 @@ const ViewTheater = () => {
                   <AiFillDelete />
                 </div>
                 <div className="cursor-pointer text-blue-500">
-                  <Link to={`/edittheater/${val.theaterid}`}>
+                  <Link state={val} to={`edittheater/${val.theaterid}`}>
                     <RxUpdate />
                   </Link>
                 </div>

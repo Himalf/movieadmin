@@ -4,9 +4,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as yup from "yup";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const UpdateMovie = () => {
+  const navigate = useNavigate();
   const { movieId } = useParams();
   console.log(movieId, "movirid");
   const location = useLocation();
@@ -102,6 +103,9 @@ const UpdateMovie = () => {
       );
 
       if (response.status === 200) {
+        setTimeout(() => {
+          navigate("/movie");
+        }, 1500);
         toast.success("Movie updated successfully");
       } else {
         toast.error("Cannot update the movie");
