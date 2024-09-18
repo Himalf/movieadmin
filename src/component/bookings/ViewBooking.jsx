@@ -25,19 +25,41 @@ const ViewBooking = () => {
     }
   };
 
-  // Group bookings by email and then by show time
+  // Function to format the date
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      month: "long", // Full month name, e.g. "September"
+      day: "numeric", // Day of the month, e.g. "15"
+      hour: "numeric", // Hour, e.g. "8"
+      minute: "2-digit", // Minutes with leading zeros, e.g. "00"
+      hour12: true, // 12-hour format with AM/PM
+    });
+  };
+
+  // Group bookings by email, show_time, and show_date
   const groupedBookings = bookings.reduce((acc, booking) => {
-    const { email, show_time } = booking;
+    const { email, show_time, show_date, title, theater } = booking;
     if (!acc[email]) {
-      acc[email] = {};
+      acc[email] = [];
     }
-    if (!acc[email][show_time]) {
-      acc[email][show_time] = {
+    const bookingExists = acc[email].find(
+      (b) =>
+        b.show_time === show_time &&
+        b.show_date === show_date &&
+        b.title === title &&
+        b.theater === theater
+    );
+
+    if (!bookingExists) {
+      acc[email].push({
         ...booking,
-        seat_numbers: [],
-      };
+        seat_numbers: [booking.seat_number],
+      });
+    } else {
+      bookingExists.seat_numbers.push(booking.seat_number);
     }
-    acc[email][show_time].seat_numbers.push(booking.seat_number);
+
     return acc;
   }, {});
 
@@ -89,28 +111,32 @@ const ViewBooking = () => {
               <thead className="bg-gray-100">
                 <tr>
                   <th className="py-2 px-4 border-b">Movie Title</th>
+                  <th className="py-2 px-4 border-b">Theater/location</th>
                   <th className="py-2 px-4 border-b">Show Time</th>
                   <th className="py-2 px-4 border-b">Show Date</th>
                   <th className="py-2 px-4 border-b">Seat Numbers</th>
+                  <th className="py-2 px-4 border-b">Booked Date</th>
                 </tr>
               </thead>
               <tbody>
-                {Object.values(groupedBookings[selectedEmail]).map(
-                  (booking) => (
-                    <tr key={`${booking.show_time}-${booking.show_date}`}>
-                      <td className="py-2 px-4 border-b">{booking.title}</td>
-                      <td className="py-2 px-4 border-b">
-                        {booking.show_time}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        {booking.show_date}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        {booking.seat_numbers.join(", ")}
-                      </td>
-                    </tr>
-                  )
-                )}
+                {groupedBookings[selectedEmail].map((booking) => (
+                  <tr
+                    key={`${booking.show_time}-${booking.show_date}-${booking.title}-${booking.theater}`}
+                  >
+                    <td className="py-2 px-4 border-b">{booking.title}</td>
+                    <td className="py-2 px-4 border-b">
+                      {booking.theater_name} / {booking.theater_location}
+                    </td>
+                    <td className="py-2 px-4 border-b">{booking.show_time}</td>
+                    <td className="py-2 px-4 border-b">{booking.show_date}</td>
+                    <td className="py-2 px-4 border-b">
+                      {booking.seat_numbers.join(", ")}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      {formatDateTime(booking.booking_date)}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           ) : (

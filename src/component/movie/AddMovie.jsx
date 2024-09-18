@@ -26,6 +26,71 @@ const AddMovie = () => {
     setNewImg(e.target.files[0]);
   };
 
+  // Calculate date limits for validation
+  const today = new Date();
+  const maxDate = new Date();
+  const minDate = new Date();
+
+  // Set date boundaries: 7 days ahead, 20 days in the past
+  maxDate.setDate(today.getDate() + 7);
+  minDate.setDate(today.getDate() - 20);
+
+  // Validation Schema
+  const validationSchema = yup.object().shape({
+    title: yup.string().required("Title is required"),
+    description: yup.string().required("Description is required"),
+    releasedate: yup
+      .date()
+      .required("Release date is required")
+      .min(minDate, "Release date cannot be more than 20 days in the past")
+      .max(maxDate, "Release date cannot be more than 7 days in the future"),
+    duration: yup
+      .number()
+      .required("Duration is required")
+      .positive("Duration must be a positive number")
+      .integer("Duration must be an integer")
+      .min(30, "Duration must be at least 30 minute") // Ensure it's at least 1 minute
+      .max(300, "Duration cannot exceed 5 hours"), // Reasonable upper limit (5 hours)
+    moviecategoryid: yup.string().required("Movie category is required"),
+  });
+
+  const initialValues = {
+    title: "",
+    description: "",
+    releasedate: "",
+    duration: "",
+    moviecategoryid: "",
+    poster: "",
+  };
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("releasedate", values.releasedate);
+      formData.append("duration", values.duration);
+      formData.append("moviecategoryid", values.moviecategoryid);
+      formData.append("poster", newImg);
+
+      const response = await axios.post(
+        "http://localhost:4000/movie",
+        formData
+      );
+
+      if (response.status === 200) {
+        toast.success("Movie added successfully");
+      } else {
+        toast.error("Cannot post data");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while adding the movie");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const FormItems = [
     {
       name: "title",
@@ -51,57 +116,8 @@ const AddMovie = () => {
       name: "moviecategoryid",
       type: "select",
       label: "Movie Category",
-      option: [],
     },
   ];
-
-  const initialValues = {
-    movieid: "",
-    title: "",
-    description: "",
-    releasedate: "",
-    duration: "",
-    moviecategoryid: "",
-    poster: "",
-  };
-
-  const validationSchema = yup.object().shape({
-    // movieid: yup.string().required("Movie ID is required"),
-    title: yup.string().required("Title is required"),
-    description: yup.string().required("Description is required"),
-    releasedate: yup.date().required("Release date is required"),
-    duration: yup.number().required("Duration is required").positive(),
-    moviecategoryid: yup.string().required("Movie category is required"),
-  });
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      const formData = new FormData();
-      formData.append("movieid", values.movieid);
-      formData.append("title", values.title);
-      formData.append("description", values.description);
-      formData.append("releasedate", values.releasedate);
-      formData.append("duration", values.duration);
-      formData.append("moviecategoryid", values.moviecategoryid);
-      formData.append("poster", newImg);
-
-      const response = await axios.post(
-        "http://localhost:4000/movie",
-        formData
-      );
-
-      if (response.status === 200) {
-        toast.success("Movie added successfully");
-      } else {
-        toast.error("Cannot post data");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("An error occurred while adding the movie");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div>
@@ -154,6 +170,7 @@ const AddMovie = () => {
                   ))}
                 </div>
 
+                {/* Image Upload */}
                 <label htmlFor="poster" className="w-fit h-fit">
                   <img
                     src={
