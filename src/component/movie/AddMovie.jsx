@@ -49,7 +49,7 @@ const AddMovie = () => {
       .required("Duration is required")
       .positive("Duration must be a positive number")
       .integer("Duration must be an integer")
-      .min(30, "Duration must be at least 30 minute") // Ensure it's at least 1 minute
+      .min(30, "Duration must be at least 30 minute") // Ensure it's at least 30 minute
       .max(300, "Duration cannot exceed 5 hours"), // Reasonable upper limit (5 hours)
     moviecategoryid: yup.string().required("Movie category is required"),
   });

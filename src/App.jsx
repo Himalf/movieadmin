@@ -10,12 +10,14 @@ import Booking from "./app/booking";
 import UpdateCategory from "./component/moviecategory/UpdateCategory";
 import UpdateMovie from "./component/movie/UpdateMovie";
 import UpdateTheater from "./component/theater/UpdateTheater";
+import DashBoard from "./app/dashboard";
 function App() {
   return (
     <main>
       <Router>
         <Routes>
           <Route element={<Layout />} path="/">
+            <Route path="/" element={<DashBoard />} />
             <Route element={<MovieCategory />} path="/moviecategory" />
             <Route
               element={<UpdateCategory />}
