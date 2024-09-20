@@ -29,11 +29,11 @@ const ViewBooking = () => {
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
-      month: "long", // Full month name, e.g. "September"
-      day: "numeric", // Day of the month, e.g. "15"
-      hour: "numeric", // Hour, e.g. "8"
-      minute: "2-digit", // Minutes with leading zeros, e.g. "00"
-      hour12: true, // 12-hour format with AM/PM
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
@@ -63,16 +63,18 @@ const ViewBooking = () => {
     return acc;
   }, {});
 
-  // Set default email to the first email in the list if none is selected
   useEffect(() => {
     if (Object.keys(groupedBookings).length > 0 && !selectedEmail) {
       setSelectedEmail(Object.keys(groupedBookings)[0]);
     }
   }, [groupedBookings, selectedEmail]);
 
-  // Handle email click
   const handleEmailClick = (email) => {
     setSelectedEmail(email);
+  };
+
+  const handlePrice = (seat_numbers, pricePerSeat) => {
+    return seat_numbers.length * pricePerSeat;
   };
 
   if (loading) {
@@ -116,6 +118,7 @@ const ViewBooking = () => {
                   <th className="py-2 px-4 border-b">Show Date</th>
                   <th className="py-2 px-4 border-b">Seat Numbers</th>
                   <th className="py-2 px-4 border-b">Booked Date</th>
+                  <th className="py-2 px-4 border-b">Total Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,6 +137,9 @@ const ViewBooking = () => {
                     </td>
                     <td className="py-2 px-4 border-b">
                       {formatDateTime(booking.booking_date)}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      ${handlePrice(booking.seat_numbers, 5)}
                     </td>
                   </tr>
                 ))}
