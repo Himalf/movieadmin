@@ -8,6 +8,7 @@ import {
   FaClock,
   FaTicketAlt,
   FaLayerGroup,
+  FaUser,
 } from "react-icons/fa";
 
 const sidebarData = [
@@ -40,6 +41,11 @@ const sidebarData = [
     name: "bookings",
     path: "/bookings",
     icon: <FaTicketAlt />,
+  },
+  {
+    name: "users",
+    path: "/users",
+    icon: <FaUser />,
   },
 ];
 
