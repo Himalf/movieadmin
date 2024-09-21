@@ -11,6 +11,7 @@ import UpdateCategory from "./component/moviecategory/UpdateCategory";
 import UpdateMovie from "./component/movie/UpdateMovie";
 import UpdateTheater from "./component/theater/UpdateTheater";
 import DashBoard from "./app/dashboard";
+import Users from "./app/users";
 function App() {
   return (
     <main>
@@ -36,6 +37,7 @@ function App() {
             <Route element={<ShowTime />} path="/showtime" />
             <Route element={<Seat />} path="/seat" />
             <Route element={<Booking />} path="/bookings" />
+            <Route element={<Users />} path="/users" />
           </Route>
         </Routes>
       </Router>
