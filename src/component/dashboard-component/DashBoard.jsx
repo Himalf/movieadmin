@@ -1,7 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaUsers, FaTicketAlt, FaFilm, FaTheaterMasks } from "react-icons/fa";
+import axios from "axios";
 
 const DashBoard = () => {
+  const [bookingCount, setBookingCount] = useState(0); // For storing total bookings count
+  const [movieCount, setMovieCount] = useState(0);
+  const [theaterCount, setTheaterCount] = useState(0);
+  const BookingDetail = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/booking");
+      setBookingCount(res.data.length); // Store the total number of bookings
+      console.log(res.data.length, "booking data length");
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+  const MoviesDetail = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/movie/now-showing");
+      setMovieCount(res.data.length); // Store the total number of bookings
+      console.log(res.data.length, "movie data length");
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+  const theaterDetails = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/theater");
+      setTheaterCount(res.data.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    BookingDetail(); // Fetch bookings on component mount
+    MoviesDetail();
+    theaterDetails();
+  }, []);
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
@@ -11,21 +48,22 @@ const DashBoard = () => {
         <div className="bg-blue-600 text-white p-4 rounded-md">
           <FaTicketAlt className="text-3xl mb-2" />
           <h2 className="text-lg font-semibold">Total Bookings</h2>
-          <p className="text-2xl">1,245</p>
+          <p className="text-2xl">{bookingCount}</p>{" "}
+          {/* Display total bookings */}
         </div>
 
         {/* Movies Overview */}
         <div className="bg-green-600 text-white p-4 rounded-md">
           <FaFilm className="text-3xl mb-2" />
           <h2 className="text-lg font-semibold">Movies</h2>
-          <p className="text-2xl">85</p>
+          <p className="text-2xl">{movieCount}</p>
         </div>
 
         {/* Theaters Overview */}
         <div className="bg-purple-600 text-white p-4 rounded-md">
           <FaTheaterMasks className="text-3xl mb-2" />
           <h2 className="text-lg font-semibold">Theaters</h2>
-          <p className="text-2xl">12</p>
+          <p className="text-2xl">{theaterCount}</p>
         </div>
 
         {/* Users Overview */}
