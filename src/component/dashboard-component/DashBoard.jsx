@@ -60,7 +60,7 @@ const DashBoard = () => {
         {/* Bookings Overview */}
         <div className="bg-blue-600 text-white p-4 rounded-md">
           <FaTicketAlt className="text-3xl mb-2" />
-          <h2 className="text-lg font-semibold">Total Bookings</h2>
+          <h2 className="text-lg font-semibold">Total Seats Bookings</h2>
           <p className="text-2xl">{bookingCount}</p>{" "}
           {/* Display total bookings */}
         </div>
