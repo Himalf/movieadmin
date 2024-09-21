@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FaUsers, FaTicketAlt, FaFilm, FaTheaterMasks } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DashBoard = () => {
+  const navigate = useNavigate();
   const [bookingCount, setBookingCount] = useState(0); // For storing total bookings count
   const [movieCount, setMovieCount] = useState(0);
   const [theaterCount, setTheaterCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
   const BookingDetail = async () => {
     try {
       const res = await axios.get("http://localhost:4000/booking");
@@ -33,10 +36,20 @@ const DashBoard = () => {
     }
   };
 
+  const userDetails = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/register");
+      setUserCount(res.data.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     BookingDetail(); // Fetch bookings on component mount
     MoviesDetail();
     theaterDetails();
+    userDetails();
   }, []);
 
   return (
@@ -70,7 +83,7 @@ const DashBoard = () => {
         <div className="bg-red-600 text-white p-4 rounded-md">
           <FaUsers className="text-3xl mb-2" />
           <h2 className="text-lg font-semibold">Users</h2>
-          <p className="text-2xl">3,562</p>
+          <p className="text-2xl">{userCount}</p>
         </div>
       </div>
 
@@ -79,7 +92,12 @@ const DashBoard = () => {
         <div className="bg-gray-100 p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-2">Manage Bookings</h2>
           <p>View and manage all bookings made by customers.</p>
-          <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md">
+          <button
+            className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md"
+            onClick={() => {
+              navigate("bookings");
+            }}
+          >
             Go to Bookings
           </button>
         </div>
@@ -87,7 +105,12 @@ const DashBoard = () => {
         <div className="bg-gray-100 p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-2">Manage Movies</h2>
           <p>Add, edit, or remove movies from the system.</p>
-          <button className="mt-4 bg-green-600 text-white py-2 px-4 rounded-md">
+          <button
+            className="mt-4 bg-green-600 text-white py-2 px-4 rounded-md"
+            onClick={() => {
+              navigate("/movie");
+            }}
+          >
             Go to Movies
           </button>
         </div>
@@ -95,7 +118,12 @@ const DashBoard = () => {
         <div className="bg-gray-100 p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-2">Manage Theaters</h2>
           <p>View and update theater information.</p>
-          <button className="mt-4 bg-purple-600 text-white py-2 px-4 rounded-md">
+          <button
+            className="mt-4 bg-purple-600 text-white py-2 px-4 rounded-md"
+            onClick={() => {
+              navigate("/theaters");
+            }}
+          >
             Go to Theaters
           </button>
         </div>
@@ -103,7 +131,12 @@ const DashBoard = () => {
         <div className="bg-gray-100 p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-2">Manage Users</h2>
           <p>View and manage registered users.</p>
-          <button className="mt-4 bg-red-600 text-white py-2 px-4 rounded-md">
+          <button
+            className="mt-4 bg-red-600 text-white py-2 px-4 rounded-md"
+            onClick={() => {
+              navigate("/users");
+            }}
+          >
             Go to Users
           </button>
         </div>
