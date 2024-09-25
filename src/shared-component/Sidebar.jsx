@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaFilm,
@@ -50,6 +50,11 @@ const sidebarData = [
 ];
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminAuthenticated"); // Remove the authentication status
+    navigate("/login"); // Redirect to login page
+  };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -78,15 +83,14 @@ const Sidebar = () => {
         } lg:translate-x-0 transition-transform duration-300`}
         style={{ width: isExpanded ? "auto" : "fit-content" }}
       >
+        {/* Hamburger inside sidebar */}
+        <button
+          onClick={toggleExpand}
+          className="flex items-center p-2 mb-4 text-white hover:bg-gray-700 transition-colors"
+        >
+          <FaBars size={24} />
+        </button>
         <nav className="flex flex-col p-4">
-          {/* Hamburger inside sidebar */}
-          <button
-            onClick={toggleExpand}
-            className="flex items-center p-2 mb-4 text-white hover:bg-gray-700 transition-colors"
-          >
-            <FaBars size={24} />
-          </button>
-
           {sidebarData.map((item, index) => (
             <Link
               key={index}
@@ -101,6 +105,14 @@ const Sidebar = () => {
               )}
             </Link>
           ))}
+          {localStorage.getItem("isAdminAuthenticated") && (
+            <button
+              className="bg-gray-400 text-white font-bold w-fit h-fit py-1 items-center justify-center  px-4 border-none rounded-lg"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          )}
         </nav>
       </aside>
 

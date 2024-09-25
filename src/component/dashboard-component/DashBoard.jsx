@@ -52,13 +52,8 @@ const DashBoard = () => {
     userDetails();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAdminAuthenticated"); // Remove the authentication status
-    navigate("/login"); // Redirect to login page
-  };
   return (
     <div className="p-6">
-      <button onClick={handleLogout}>Logout</button>
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
