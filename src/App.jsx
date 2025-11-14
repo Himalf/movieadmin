@@ -18,6 +18,7 @@ function App() {
   return (
     <main>
       <Router>
+        {/* Testing */}
         <Routes>
           <Route element={<Layout />} path="/">
             <Route path="/login" element={<AdminLogin />} />
